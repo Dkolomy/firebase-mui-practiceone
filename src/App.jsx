@@ -14,7 +14,7 @@ import Cars from "./pages/Cars";
 
 function App() {
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="lg">
       <Header />
       <Routes>
         <Route exact path="/" element={<Home />} />
