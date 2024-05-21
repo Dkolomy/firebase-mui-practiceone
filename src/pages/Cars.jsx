@@ -7,7 +7,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, IconButton, Tooltip } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import { Link } from "react-router-dom";
 
 const Cars = () => {
   const [cars, setCars] = useState([]);
@@ -16,7 +18,6 @@ const Cars = () => {
   const fetchData = async () => {
     setLoading(true);
     const res = await findAll();
-    console.log(res);
     setCars([...res]);
     setLoading(false);
   };
@@ -29,6 +30,13 @@ const Cars = () => {
     <>
       {loading && <CircularProgress />}
       {!loading && (
+        <IconButton component={Link} to="/addcar">
+          <Tooltip id="button-report" title="Add new car">
+            <AddIcon />
+          </Tooltip>
+        </IconButton>
+      )}
+      {cars.length > 0 && (
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
@@ -42,16 +50,16 @@ const Cars = () => {
             <TableBody>
               {cars.map((car) => (
                 <TableRow
-                key={car.id}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {car.id}
-                </TableCell>
-                <TableCell>{car.brand}</TableCell>
-                <TableCell>{car.color}</TableCell>
-                <TableCell align="right">{car.price}</TableCell>
-              </TableRow>
+                  key={car.id}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {car.id}
+                  </TableCell>
+                  <TableCell>{car.brand}</TableCell>
+                  <TableCell>{car.color}</TableCell>
+                  <TableCell align="right">{car.price}</TableCell>
+                </TableRow>
               ))}
             </TableBody>
           </Table>

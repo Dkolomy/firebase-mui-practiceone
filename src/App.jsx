@@ -6,11 +6,11 @@ import Container from "@mui/material/Container";
 import Copyright from "./Copyright";
 import Header from "./components/nav/Header";
 import Login from "./pages/auth/Login";
-import Logout from "./pages/auth/Logout";
 import Register from "./pages/auth/Register";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import Cars from "./pages/Cars";
+import AddCar from "./pages/AddCar";
 
 function App() {
   return (
@@ -23,7 +23,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/register" element={<Register />} />
-        <Route exact path="/logout" element={<Logout />} />
+        <Route exact path="/addcar" element={<AddCar />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Copyright />
