@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Button,
@@ -9,6 +9,7 @@ import {
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { create, update, srvTimestamp, findOne } from "../utils/tools";
 
 const AddCar = () => {
   const [brand, setBrand] = useState("");
@@ -17,7 +18,35 @@ const AddCar = () => {
   const [available, setAvailable] = useState(false);
   const [brandError, setBrandError] = useState(false);
 
+  const [exists, setExists] = useState(false);
   const [openSnack, setOpenSnack] = useState(false);
+  const [snackMessage, setSnackMessage] = useState(
+    "Successfully adding new car"
+  );
+
+  const queryParameters = new URLSearchParams(window.location.search);
+  let carId = queryParameters.get("id");
+
+  const fetchOne = async (id) => {
+    const res = await findOne(id);
+    if (res === undefined) {
+      setExists(false);
+      setSnackMessage("Car is not exists");
+      setOpenSnack(true);
+    } else {
+      setExists(true);
+      setBrand(res.brand);
+      setColor(res.color);
+      setPrice(res.price);
+      setAvailable(res.available);
+    }
+  };
+
+  useEffect(() => {
+    if (carId) {
+      fetchOne(carId);
+    }
+  }, [carId]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -28,7 +57,21 @@ const AddCar = () => {
     }
 
     if (brand) {
-      console.log(brand, color, price, available);
+      let args = {
+        brand: brand,
+        color: color,
+        price: price,
+        available: available,
+        createdAt: srvTimestamp,
+      };
+      if (exists) {
+        args = { id: carId, ...args };
+        update(args);
+        setSnackMessage("Successfully update car");
+      } else {
+        create(args);
+        setSnackMessage("Successfully adding new car");
+      }
       setOpenSnack(true);
     }
   };
@@ -96,14 +139,14 @@ const AddCar = () => {
           value={price}
         />
         <Button variant="outlined" color="secondary" type="submit">
-          Add to the car list
+          {exists ? "Edit Car" : "Add New Car"}
         </Button>
         <Snackbar
           anchorOrigin={{ vertical: "top", horizontal: "left" }}
           open={openSnack}
           autoHideDuration={5000}
           onClose={handleCloseSnack}
-          message="Successfully adding new car"
+          message={snackMessage}
           action={action}
         />
       </form>

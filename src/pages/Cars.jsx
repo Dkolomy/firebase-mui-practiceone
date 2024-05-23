@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { findAll } from "../utils/tools";
+import { findAll, findOne, del } from "../utils/tools";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -7,13 +7,23 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { CircularProgress, IconButton, Tooltip } from "@mui/material";
+import { CircularProgress, IconButton, Snackbar, Tooltip } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { Link } from "react-router-dom";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
+import {collection, onSnapshot} from "firebase/firestore";
+import { db, collection_name } from "../utils/firebase";
+
+import { Link, useNavigate } from "react-router-dom";
 
 const Cars = () => {
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [openSnack, setOpenSnack] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("")
+
+  let navigate = useNavigate();
 
   const fetchData = async () => {
     setLoading(true);
@@ -25,6 +35,40 @@ const Cars = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleEdit = async (id) => {
+    const res = await findOne(id);
+    if (res === undefined) {
+      setSnackMessage("Car is not exists");
+      setOpenSnack(true);
+    } else {
+      navigate(`/addcar?id=${id}`);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    del(id);
+    setSnackMessage("Car succussfully deleted");
+    setOpenSnack(true);
+    fetchData();
+  };
+
+  const handleCloseSnack = () => {
+    setOpenSnack(false);
+  };
+
+  const action = (
+    <>
+      <IconButton
+        size="small"
+        area-label="close"
+        color="inherit"
+        onClick={handleCloseSnack}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </>
+  );
 
   return (
     <>
@@ -45,6 +89,7 @@ const Cars = () => {
                 <TableCell>Brand</TableCell>
                 <TableCell>Color</TableCell>
                 <TableCell>Price</TableCell>
+                <TableCell></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -59,14 +104,40 @@ const Cars = () => {
                   <TableCell>{car.brand}</TableCell>
                   <TableCell>{car.color}</TableCell>
                   <TableCell align="right">{car.price}</TableCell>
+                  <TableCell align="right">
+                    <IconButton
+                      onClick={() => handleEdit(car.id)}
+                      area-label="edit"
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => handleDelete(car.id)}
+                      aria-label="delete"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "left" }}
+            open={openSnack}
+            autoHideDuration={5000}
+            onClose={handleCloseSnack}
+            message={snackMessage}
+            action={action}
+          />
         </TableContainer>
       )}
     </>
   );
 };
+
+onSnapshot(collection(db, collection_name), () => {
+  console.log("Collection was updated")
+})
 
 export default Cars;

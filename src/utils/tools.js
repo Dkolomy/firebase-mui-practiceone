@@ -9,6 +9,7 @@ import {
   where,
   query,
   limit,
+  serverTimestamp,
 } from "firebase/firestore";
 import { db, collection_name } from "./firebase";
 
@@ -16,6 +17,8 @@ export const findAll = async () => {
   const doc_refs = await getDocs(collection(db, collection_name));
   return getSnapshotData(doc_refs);
 };
+
+export const srvTimestamp = serverTimestamp();
 
 export const findOne = async (id) => {
   const d = await getDoc(doc(db, collection_name, id));
