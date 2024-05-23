@@ -6,6 +6,7 @@ import App from "./App.jsx";
 import theme from "./theme";
 import { BrowserRouter } from "react-router-dom";
 import "./utils/firebase";
+import { getAuth } from "firebase/auth";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -18,3 +19,12 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     </BrowserRouter>
   </React.StrictMode>
 );
+
+getAuth().onAuthStateChanged((user) => {
+  if (user) {
+    console.log(user.email);
+    console.log(user.uid);
+  } else {
+    console.log("no user");
+  }
+});

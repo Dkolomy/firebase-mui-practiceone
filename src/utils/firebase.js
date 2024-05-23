@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 
 //import firebase from "firebase/compat/app";
@@ -20,29 +21,8 @@ export default initializeApp(firebaseConfig);
 // init services
 export const db = getFirestore();
 export const collection_name = "cars";
+export const auth = getAuth();
 
-// collection ref
-// const collection_name = "cars";
-// const colRef = collection(db, collection_name);
-
-// get collection data
-// getDocs(colRef)
-//   .then((snapshot) => {
-//     let res = [];
-//     snapshot.docs.forEach((doc) => {
-//       res.push({
-//         id: doc.id,
-//         ...doc.data(),
-//       });
-//     });
-//     console.log(res);
-//   })
-//   .catch((err) => {
-//     console.log(err.message);
-//   });
-
-//const db = app.firestore;
-//const auth = firebase.auth;
 //const storage = firebase.storage;
 
 //console.log(db)

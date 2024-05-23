@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import Cars from "./pages/Cars";
 import AddCar from "./pages/AddCar";
+import Logout from "./pages/auth/Logout";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/cars" element={<Cars />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route exact path="/login" element={<Login />} />
+        <Route exact path="/logout" element={<Logout />} />
         <Route exact path="/register" element={<Register />} />
         <Route exact path="/addcar" element={<AddCar />} />
         <Route path="*" element={<Navigate to="/" replace />} />

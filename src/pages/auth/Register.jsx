@@ -1,44 +1,60 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { Button, TextField, Snackbar, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { auth } from "../../utils/firebase";
 
 const Register = () => {
   const [email, setEmail] = useState("");
-  const [password1, setPassword1] = useState("");
+  const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const [emailError, setEmailError] = useState(false);
-  const [password1Error, setPassword1Error] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
   const [password2Error, setPassword2Error] = useState(false);
   const [openSnack, setOpenSnack] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
 
-  function handleSubmit(event) {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     setEmailError(false);
-    setPassword1Error(false);
+    setPasswordError(false);
     setPassword2Error(false);
 
     if (email == "") {
       setEmailError(true);
     }
-    if (password1 == "") {
-      setPassword1Error(true);
+    if (password == "") {
+      setPasswordError(true);
     }
     if (password2 == "") {
       setPassword2Error(true);
     }
 
-    if (password1 !== password2) {
-      setPassword1Error(true);
+    if (password !== password2) {
+      setPasswordError(true);
       setPassword2Error(true);
     }
 
-    if (email && password1 && password2) {
-      console.log(email, password1, password2);
-      setOpenSnack(true);
+    if (email && password && password2) {
+      await createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // const user = userCredential.user;
+          // console.log(user);
+          setSnackMessage("Successfully Registered");
+          setOpenSnack(true);
+        })
+        .catch((error) => {
+          // https://firebase.google.com/docs/reference/js/auth
+          // readonly EMAIL_EXISTS: "auth/email-already-in-use";
+          const errorCode = error.code;
+          //          const errorMessage = error.message;
+          setSnackMessage(errorCode);
+          setOpenSnack(true);
+        });
     }
-  }
+  };
 
   const handleCloseSnack = () => {
     setOpenSnack(false);
@@ -78,18 +94,18 @@ const Register = () => {
           variant="outlined"
           color="secondary"
           label="Password"
-          onChange={(e) => setPassword1(e.target.value)}
-          value={password1}
+          onChange={(e) => setPassword(e.target.value)}
+          value={password}
           fullWidth
           required
           sx={{ mb: 4 }}
-          error={password1Error}
+          error={passwordError}
         />
         <TextField
           type="password"
           variant="outlined"
           color="secondary"
-          label="Retypr password"
+          label="Retype password"
           onChange={(e) => setPassword2(e.target.value)}
           value={password2}
           fullWidth
@@ -105,7 +121,7 @@ const Register = () => {
           open={openSnack}
           autoHideDuration={5000}
           onClose={handleCloseSnack}
-          message="Successfully Registered"
+          message={snackMessage}
           action={action}
         />
       </form>

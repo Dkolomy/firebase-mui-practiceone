@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, TextField, Snackbar, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../utils/firebase";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -9,8 +11,9 @@ const Login = () => {
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [openSnack, setOpenSnack] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     setEmailError(false);
@@ -24,6 +27,23 @@ const Login = () => {
     }
 
     if (email && password) {
+      await signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // const user = userCredential.user;
+          // console.log(user);
+          setSnackMessage("Successfully Logged In");
+          setOpenSnack(true);
+        })
+        .catch((error) => {
+          // https://firebase.google.com/docs/reference/js/auth
+          // readonly INVALID_LOGIN_CREDENTIALS: "auth/invalid-credential";
+          const errorCode = error.code;
+          //        const errorMessage = error.message;
+          //        console.log(errorCode, errorMessage);
+          setSnackMessage(errorCode);
+          setOpenSnack(true);
+        });
+
       console.log(email, password);
       setOpenSnack(true);
     }
@@ -82,7 +102,7 @@ const Login = () => {
           open={openSnack}
           autoHideDuration={5000}
           onClose={handleCloseSnack}
-          message="Successfully Logged In"
+          message={snackMessage}
           action={action}
         />
       </form>
