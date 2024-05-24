@@ -24,6 +24,12 @@ getAuth().onAuthStateChanged((user) => {
   if (user) {
     console.log(user.email);
     console.log(user.uid);
+    user.getIdTokenResult().then((token) => {
+      console.log(token);
+    });
+    // user.getIdToken().then((token) => {
+    //   console.log(token);
+    // });
   } else {
     console.log("no user");
   }

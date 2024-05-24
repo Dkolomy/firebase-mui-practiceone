@@ -30,6 +30,15 @@ const Logout = () => {
     setOpenSnack(true);
   };
 
+  const handleMyProfile = () => {
+    // import { getAuth, updateProfile } from "firebase/auth";
+    const user = getAuth().currentUser;
+    user.providerData.forEach((profile) => {
+      console.log(profile);
+    });
+    console.log("Email Verified:", user.emailVerified);
+  };
+
   const action = (
     <>
       <IconButton
@@ -46,6 +55,9 @@ const Logout = () => {
     <Stack spacing={2} sx={{ m: 2 }} justifyContent="center" direction="row">
       <Button onClick={handleWhoAmI} variant="contained" color="primary">
         Who Am I
+      </Button>
+      <Button onClick={handleMyProfile} variant="contained" color="primary">
+        My Profile
       </Button>
       <Button onClick={handleLogout} variant="outlined" color="secondary">
         Logout

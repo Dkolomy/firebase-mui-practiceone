@@ -28,7 +28,11 @@ const Login = () => {
 
     if (email && password) {
       await signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
+        .then((response) => {
+          console.log("Email Verified:", response.user.emailVerified);
+          // response.user.sendEmailVerification().then(() => {
+          //   console.log('mail send');
+          // });
           // const user = userCredential.user;
           // console.log(user);
           setSnackMessage("Successfully Logged In");
