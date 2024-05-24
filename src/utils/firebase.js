@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getStorage, ref } from "firebase/storage";
 
 //import firebase from "firebase/compat/app";
 //import "firebase/storage";
@@ -23,7 +24,9 @@ export const db = getFirestore();
 export const collection_name = "cars";
 export const auth = getAuth();
 
-//const storage = firebase.storage;
+// https://firebase.google.com/docs/storage/web/create-reference
+export const storage = getStorage();
+export const storageRef = ref(storage);
 
 //console.log(db)
 

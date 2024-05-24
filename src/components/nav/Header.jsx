@@ -12,7 +12,7 @@ import { useState } from "react";
 import { AccountCircle } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
-const pages = ["Home", "Cars"];
+const pages = ["Home", "Cars", "Upload"];
 const authorization = ["Dashboard", "Login", "Register", "Logout"];
 
 const Header = () => {
