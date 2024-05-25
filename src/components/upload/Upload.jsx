@@ -16,6 +16,7 @@ import {
   uploadBytes,
   uploadBytesResumable,
   getDownloadURL,
+  getMetadata,
 } from "firebase/storage";
 
 const Upload = () => {
@@ -39,9 +40,9 @@ const Upload = () => {
       .then(() => {
         setSnackMessage("File uploaded successfully");
       })
-      .catch((err) => {
-        setSnackMessage("File upload ERROR");
-        console.log(err);
+      .catch((error) => {
+        setSnackMessage(error.code);
+        console.log(error);
       });
     setOpenSnack(true);
   };
@@ -53,6 +54,9 @@ const Upload = () => {
     const imageRef = ref(storage, `images/${uuid + image.name}`);
     const metadata = {
       contentType: image.type,
+      customMetadata: {
+        dkolomyData: "Dmitry Kolomyitsev",
+      },
     };
 
     const uploadTask = uploadBytesResumable(imageRef, image, metadata);
@@ -75,7 +79,8 @@ const Upload = () => {
       },
       (error) => {
         // Handle unsuccessful uploads
-        setSnackMessage("File upload ERROR");
+        // https://firebase.google.com/docs/storage/web/handle-errors
+        setSnackMessage(error.code);
         setOpenSnack(true);
         console.log(error);
       },
@@ -87,6 +92,15 @@ const Upload = () => {
           console.log("File available at", downloadURL);
         });
         //setProgress(0);
+
+        getMetadata(imageRef, image)
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((error) => {
+            console.log(error.code);
+          });
+
         setSnackMessage("File uploaded successfully");
         setOpenSnack(true);
       }

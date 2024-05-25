@@ -13,6 +13,7 @@ import Cars from "./pages/Cars";
 import AddCar from "./pages/AddCar";
 import Logout from "./pages/auth/Logout";
 import Upload from "./components/upload/Upload";
+import UploadList from "./components/upload/UploadList";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route exact path="/register" element={<Register />} />
         <Route exact path="/addcar" element={<AddCar />} />
         <Route exact path="/upload" element={<Upload />} />
+        <Route exact path="/uploadlist" element={<UploadList />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Copyright />
